@@ -440,4 +440,4 @@ FodyWeavers.xsd
 *.res
 *.rc
 *.check_cache
-out/
+out\**
