@@ -2,7 +2,7 @@
  * \file   hdr.h
  * \brief  functions for HDR
  * 
- * \author Dario Loi
+ * \authors Dario Loi, Flavio Gezzi
  * \date   December 2022
  *********************************************************************/
 
@@ -14,6 +14,12 @@ using namespace cimg_library;
 /**
  * @brief Map LDR images to HDR
  * 
+ * Implements the Exposure Fusion algorithm described in Mertens et al. combines 
+ * the information of multiple Low Definition Range (LDR) images to reconstruct 
+ * a High Definition image (HDR).
+ * 
+ * @see https://web.stanford.edu/class/cs231m/project-1/exposure-fusion.pdf
+ * 
  * @tparam T the integral type of the pixel
  * @param LDR_images a CImg<T> object containing the LDR images
  * @return CImg<T> a CImg<T> object containing the HDR image
@@ -23,6 +29,8 @@ CImg<T> LDR_to_HDR(CImg<T> const& LDR_images);
 
 /**
  * @brief Compute the weights for each LDR image
+ * 
+ * Computes the normalized weight matrix for a stack of LDR images.
  * 
  * @tparam T the integral type of the pixel
  * @param LDR_images a CImg<T> object containing the LDR images
@@ -64,6 +72,8 @@ CImg<T> compute_wexp(CImg<T> const& LDR_images);
 
 /**
  * @brief Fuse the LDR images
+ * 
+ * 
  * 
  * @tparam T the integral type of the pixel
  * @param LDR_images a CImg<T> object containing the LDR images

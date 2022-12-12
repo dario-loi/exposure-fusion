@@ -2,7 +2,7 @@
  * \file   CGProj.cpp
  * \brief  Main application for Computer graphics project.
  * 
- * \author Dario Loi
+ * \author Dario Loi, Flavio Gezzi
  * \date   December 2022
  *********************************************************************/
 
