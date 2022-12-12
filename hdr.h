@@ -23,7 +23,7 @@ CImg<T> LDR_to_HDR(CImg<T> const& LDR_images);
 
 /**
  * @brief Compute the weights for each LDR image
- * 
+ * @author Dario Loi
  * @tparam T the integral type of the pixel
  * @param LDR_images a CImg<T> object containing the LDR images
  * @return CImg<T> a CImg<T> object containing the weights for each LDR image
@@ -33,7 +33,7 @@ CImg<T> compute_W(CImg<T> const& LDR_images);
 
 /**
  * @brief Compute the Laplacian pyramid of the LDR images
- * 
+ * @author Flavio Gezzi
  * @tparam T the integral type of the pixel
  * @param LDR_images a CImg<T> object containing the LDR images
  * @return CImg<T> a CImg<T> object containing the Laplacian pyramid of the LDR images
@@ -43,7 +43,7 @@ CImg<T> compute_contrast(CImg<T> const& LDR_images);
 
 /**
  * @brief Compute the saturation of the LDR images
- * 
+ * @author Flavio Gezzi
  * @tparam T the integral type of the pixel
  * @param LDR_images a CImg<T> object containing the LDR images
  * @return CImg<T> a CImg<T> object containing the saturation of the LDR images
@@ -53,11 +53,10 @@ CImg<T> compute_saturation(CImg<T> const& LDR_images);
 
 /**
  * @brief Compute the exposure of the LDR images
- * 
+ * @author Dario Loi
  * @tparam T the integral type of the pixel
  * @param LDR_images 
  * @return CImg<T> a CImg<T> object containing the exposure of the LDR images
- */
  */
 template<typename T>
 CImg<T> compute_wexp(CImg<T> const& LDR_images);
