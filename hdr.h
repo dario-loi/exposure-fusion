@@ -21,6 +21,9 @@ namespace hdr
      * 
      * @note non l'ho mai fatto, ma l'ho sempre sognato.
      * 
+	 * @author Dario Loi
+	 * @date December 2022
+	 * 
      * @tparam Args a variadic template parameter pack
      * @tparam T a type that supports multiplication
      * @param args a parameter pack, containing the values to be multiplied
@@ -34,6 +37,9 @@ namespace hdr
 
 	/**
 	 * @brief Map LDR images to HDR
+	 * 
+	 * @authors Dario Loi, Flavio Gezzi
+	 * @date December 2022
 	 * 
 	 * Implements the Exposure Fusion algorithm described in Mertens et al. combines 
 	 * the information of multiple Low Definition Range (LDR) images to reconstruct 
@@ -52,6 +58,9 @@ namespace hdr
 	 * @brief Compute the weights for each LDR image
 	 * 
 	 * Computes the normalized weight matrix for a stack of LDR images.
+	 * 
+	 * @author Dario Loi
+	 * @date December 2022
 	 * 
 	 * @tparam T the integral type of the pixel
 	 * @param LDR_images a CImg<T> object containing the LDR images
@@ -81,6 +90,9 @@ namespace hdr
 	 * Computes a contrast metric by performing a Laplacian convolution
 	 * on the LDR images.
 	 * 
+	 * @author Flavio Gezzi
+	 * @date December 2022
+	 * 
 	 * @tparam T the integral type of the pixel
 	 * @param LDR_images a CImg<T> object containing the LDR images
 	 * @return CImg<T> a CImg<T> object containing the contrast metric of the LDR images
@@ -91,6 +103,9 @@ namespace hdr
 	/**
 	 * @brief Compute the saturation of the LDR images
 	 * 
+	 * @author Flavio Gezzi
+	 * @date December 2022
+	 * 
 	 * @tparam T the integral type of the pixel
 	 * @param LDR_images a CImg<T> object containing the LDR images
 	 * @return CImg<T> a CImg<T> object containing the saturation of the LDR images
@@ -100,6 +115,9 @@ namespace hdr
 
 	/**
 	 * @brief Compute the exposure of the LDR images
+	 * 
+	 * @author Dario Loi
+	 * @date December 2022
 	 * 
 	 * @tparam T the integral type of the pixel
 	 * @param LDR_images a CImg<T> object containing the LDR images
