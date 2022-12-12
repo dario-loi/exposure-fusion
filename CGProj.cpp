@@ -7,6 +7,9 @@
  *********************************************************************/
 
 #include "vendor/CImg.h"
+#include "hdr.h"
+#include <iostream>
+#include <cstdio>
 
 const constexpr size_t X = 256;
 const constexpr size_t Y = 256;
@@ -20,5 +23,8 @@ int main()
 	img.draw_text(X / 2, Y / 2, "Hello World!", "white", 1.0f, 14);
 	img.display();
 
-	return 0;
+	double x = hdr::stdev_fold<double>(1.0f, 2.0f, 3.0f, 1000.f, 0.00002f);
+	printf("%f", x);
+
+	return 1;
 }

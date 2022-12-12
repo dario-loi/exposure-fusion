@@ -12,4 +12,14 @@ if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET CGProj PROPERTY CXX_STANDARD 20)
 endif()
 
+
+# Set latest C++ standard
+if (MSVC_VERSION GREATER_EQUAL "1900")
+    include(CheckCXXCompilerFlag)
+    CHECK_CXX_COMPILER_FLAG("/std:c++latest" _cpp_latest_flag_supported)
+    if (_cpp_latest_flag_supported)
+        add_compile_options("/std:c++latest")
+    endif()
+endif()
+
 # TODO: Add tests and install targets if needed.
