@@ -165,6 +165,27 @@ template <typename T> CImg<T> compute_W(CImg<T> const &LDR_images)
  * @return CImg<T> a CImg<T> object containing the contrast metric of the LDR images
  */
 template <typename T> CImg<T> compute_contrast(CImg<T> const &LDR_images);
+{
+    auto &LDR_images = LDR_images; // alias
+
+    // Laplacian kernel
+    CImg<T> kernel(3, 3, 1, 1, 0);
+    kernel(0, 1) = kernel(1, 0) = kernel(1, 2) = kernel(2, 1) = -1;
+    kernel(1, 1) = 4;
+
+    // Convolve the LDR images with the Laplacian kernel
+    auto C = LDR_images.get_convolve(kernel);
+
+    // Compute the contrast metric
+    Contrast = C.get_abs().get_sum(2);
+
+    return C;
+}
+
+
+
+
+
 /**
  * @brief Compute the saturation of the LDR images
  *
@@ -176,6 +197,14 @@ template <typename T> CImg<T> compute_contrast(CImg<T> const &LDR_images);
  * @return CImg<T> a CImg<T> object containing the saturation of the LDR images
  */
 template <typename T> CImg<T> compute_saturation(CImg<T> const &LDR_images);
+{
+    auto &LDR_images = LDR_images; // def alias
+
+    // Compute the saturation metric
+    auto Saturation = LDR_images.get_RGBtoHSI().get_channel(1);
+
+    return Saturion;
+}
 
 /**
  * @brief Compute the exposure of the LDR images
