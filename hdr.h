@@ -166,20 +166,23 @@ template <typename T> CImg<T> compute_W(CImg<T> const &LDR_images)
  */
 template <typename T> CImg<T> compute_contrast(CImg<T> const &LDR_images);
 {
-    auto &LDR_images = LDR_images; // alias
+    auto &LDR_images = LDR_images; // Create alias
 
-    // Laplacian kernel
-    CImg<T> kernel(3, 3, 1, 1, 0);
-    kernel(0, 1) = kernel(1, 0) = kernel(1, 2) = kernel(2, 1) = -1;
-    kernel(1, 1) = 4;
+    // Construct Laplacian filter 3X3 and initialized to 0
+    CImg<T> laplacian(3, 3, 1, 1, 0);                                                       //  0  -1   0
+    laplacian(0, 1) = laplacian(1, 0) = laplacian(1, 2) = laplacian(2, 1) = -1;             // -1   4  -1
+    laplacian(1, 1) = 4;                                                                    //  0  -1   0
 
     // Convolve the LDR images with the Laplacian kernel
-    auto C = LDR_images.get_convolve(kernel);
+    auto Contrast = LDR_images.get_convolve(laplacian);
 
-    // Compute the contrast metric
-    Contrast = C.get_abs().get_sum(2);
+    // Compute the absolute value of pixel values
+    Contrast = Contrast.get_abs()
 
-    return C;
+    // Sum the absolute values of the pixel values
+    Contrast = Contrast.get_sum(2); //parameter 2 means that the sum is performed on the third dimension
+
+    return Contrast;
 }
 
 
@@ -198,10 +201,12 @@ template <typename T> CImg<T> compute_contrast(CImg<T> const &LDR_images);
  */
 template <typename T> CImg<T> compute_saturation(CImg<T> const &LDR_images);
 {
-    auto &LDR_images = LDR_images; // def alias
+    auto &LDR_images = LDR_images; // Define alias
 
     // Compute the saturation metric
-    auto Saturation = LDR_images.get_RGBtoHSI().get_channel(1);
+    auto Saturation = LDR_images.get_RGBtoHSI(); // Convert LDR_images from RGB to HSI(Hue, Saturation, Intensity) color space 
+
+    Saturation = Saturation.get_channel(1); // Extract the saturation channel
 
     return Saturion;
 }
