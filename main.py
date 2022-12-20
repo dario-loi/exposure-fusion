@@ -208,13 +208,14 @@ def align_images(images):
 
 for i in range(1, 4):
 
-    [print(f"data\pictures\HDR_test_scene_{i}__1.{i}.{j}.png") for j in range(
+    [print(f"data/pictures/HDR_test_scene_{i}__1.{i}.{j}.png") for j in range(
         1, 6)]
 
     images = [cv2.imread(
-        f"data\pictures\HDR_test_scene_{i}__1.{i}.{j}.png") for j in range(1, 6)]
+        f"data/pictures/HDR_test_scene_{i}__1.{i}.{j}.png") for j in range(1, 6)]
 
     print(len(images))
 
     hdr = exposure_fusion(align_images(images))
     cv2.imwrite(f"A_{i}.png", hdr)
+ ##fix path for mac
