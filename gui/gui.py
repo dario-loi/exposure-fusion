@@ -8,6 +8,8 @@ from pathlib import Path
 # from tkinter import *
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+from tkinter import filedialog as fd
+from tkinter.messagebox import showinfo
 
 
 OUTPUT_PATH = Path(__file__).parent
@@ -16,6 +18,19 @@ ASSETS_PATH = OUTPUT_PATH / Path(r"elements")
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
+
+def select_file():
+    filetypes = (('images files', '*.jpg'),('All files', '*.*'))
+
+    filename = fd.askopenfilename(
+        title='Open a file',
+        initialdir='/',
+        filetypes=filetypes)
+
+    showinfo(
+        title='Selected File',
+        message=filename
+    )
 
 
 window = Tk()
@@ -44,12 +59,12 @@ canvas.create_rectangle(
     outline="")
 
 canvas.create_text(
-    500.0,
-    0.0,
+    570,
+    30.0,
     anchor="nw",
-    text="Exposure fusions",
+    text="Exposure \n  fusions",
     fill="#000000",
-    font=("Inter Bold", 36 * -1)
+    font=("Inter Bold", 38 * -1)
 )
 
 button_image_1 = PhotoImage(
@@ -58,7 +73,7 @@ button_1 = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_1 clicked"),
+    command=select_file,
     relief="flat"
 )
 button_1.place(
@@ -67,6 +82,7 @@ button_1.place(
     width=200.0,
     height=50.0
 )
+
 
 button_image_2 = PhotoImage(
     file=relative_to_assets("button_2.png"))
@@ -113,5 +129,10 @@ canvas.create_rectangle(
     600.0,
     fill="#D9D9D9",
     outline="")
-window.resizable(False, False)
-window.mainloop()
+
+def create_frame():  
+    window.resizable(False, False)
+    window.title("Exposure fusions")
+    window.mainloop()
+
+create_frame()

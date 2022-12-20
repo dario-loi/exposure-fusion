@@ -1,5 +1,6 @@
 import tkinter as tk
 from PIL import ImageTk, Image
+import gui.py
 
 
 class Application(tk.Frame):
