@@ -133,12 +133,12 @@ rettangoloslider.place(x = 0, y = 0)
 app = Application(master=rettangoloslider)
 
 
-listbox = Listbox(window, width=20, height=10)  
+#listbox = Listbox(window, width=20, height=10)  
 
-listbox.insert(1,"path1")  
-listbox.insert(2, "path2")   
+#listbox.insert(1,"path1")  
+#listbox.insert(2, "path2")   
 
-listbox.pack()
+#listbox.pack()
 
 def build():  
     window.resizable(False, False)

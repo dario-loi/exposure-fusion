@@ -4,7 +4,6 @@ from PIL import Image, ImageTk
 
 class Application(tk.Frame):
     
-
     
     def __init__(self, master=None):
         super().__init__(master)
@@ -35,8 +34,6 @@ class Application(tk.Frame):
         self.line = self.canv2.create_line(500/2, 0, 500/2, 600, 
             width=4, fill="white")    
 
-        #self.circleImage = ImageTk.PhotoImage(Image.open("gui/elements/circle.png").resize((64, 64)))
-        #self.circle = self.canv2.create_image(500/2, 600/2, image=self.circleImage) 
         self.canv2.bind('<B1-Motion>', self.slide_image)
     
 
@@ -47,13 +44,13 @@ class Application(tk.Frame):
             if cur_length < 500: 
                 self.canv2.config(width=cur_length)
                 self.canv2.coords(self.line, cur_length, 0, cur_length, 600)
-                #self.canv2.coords(self.circle, cur_length, 600/2)
             else:
                 self.canv2.config(width=500)
                 self.canv2.coords(self.line, 500, 0, 500, 600)
-                #self.canv2.coords(self.circle, 500, 600/2)
 
-def main():
+
+def build_slider():
+    #Main function to build the slider
     root = tk.Tk()
     root.state('zoomed')
     root.geometry("%dx%d+0+0" % (500, 600))
@@ -62,4 +59,3 @@ def main():
     app.mainloop()
     
 
-main()
