@@ -85,10 +85,10 @@ button_2.place(
 )
 
 canvas.create_text(
-    501.0,
-    574.0,
+    540.0,
+    575.0,
     anchor="nw",
-    text="©Copyright 2022 Gezzi and Loi",
+    text="©Copyright 2022 Gezzi Flavio and Loi Dario",
     fill="#000000",
     font=("Inter", 12 * -1)
 )
@@ -101,7 +101,12 @@ canvas.create_rectangle(
     fill="#000000",
     outline="")
 
+###############
+#    Create a rectangle
+#    x = 0, y = 0, width = 500, height = 600
+###############
 canvas.create_rectangle(
+
     0.0,
     0.0,
     500.0,
