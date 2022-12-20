@@ -4,6 +4,7 @@ from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 from tkinter import Listbox
+from image_slider import *
 
 
 OUTPUT_PATH = Path(__file__).parent
@@ -22,7 +23,6 @@ def select_file():
         initialdir='/',
         filetypes=filetypes)
     return path_list
-
 
 window = Tk()
 
@@ -120,17 +120,29 @@ canvas.create_rectangle(
     fill="#D9D9D9",
     outline="")
 
+rettangoloslider = Canvas(
+    window,
+    bg = "#FFFFFF",
+    height = 600,
+    width = 500,
+    bd = 0,
+    highlightthickness = 0,
+    relief = "ridge"
+)
+rettangoloslider.place(x = 0, y = 0)
+app = Application(master=rettangoloslider)
+
 
 listbox = Listbox(window, width=20, height=10)  
-   
+
 listbox.insert(1,"path1")  
 listbox.insert(2, "path2")   
-   
+
 listbox.pack()
 
-def create_frame():  
+def build():  
     window.resizable(False, False)
     window.title("Exposure fusions")
     window.mainloop()
 
-create_frame()
+build()
