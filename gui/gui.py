@@ -39,7 +39,13 @@ main_frame.create_text( 570, 30.0, anchor="nw",text="Exposure \n  fusions", fill
 
 #Listbox path
 listbox = Listbox(window)
-listbox.place(x=550.0, y=150.0, width=200.0, height=150.0)
+listbox.place(x=550.0, y=130.0, width=200.0, height=150.0)
+
+#Remove button, on click remove a path from the listbox-
+remove_button_image = PhotoImage(file=relative_to_assets("button_1.png"))
+remove_button = Button(image=remove_button_image, borderwidth=0, highlightthickness=0, command=select_file, relief="flat")
+remove_button.place(x=550.0, y=310.0, width=200.0, height=50.0)
+
 
 #Upload button, on click open task to select file-
 upload_button_image = PhotoImage(file=relative_to_assets("button_1.png"))
