@@ -22,7 +22,9 @@ def select_file():
         title='Open a file',
         initialdir='/',
         filetypes=filetypes)
-    return path_list
+    for element in path_list:
+        listbox.insert(0 ,element)
+    return
 
 window = Tk()
 
