@@ -14,7 +14,7 @@ ASSETS_PATH = OUTPUT_PATH / Path(r"elements")
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
-def select_file():
+def upload_file():
     path_list = []
     filetypes = (('images files', '*.jpg'),('All files', '*.*'))
 
@@ -24,6 +24,10 @@ def select_file():
         filetypes=filetypes)
     for element in path_list:
         listbox.insert(0 ,element)
+    return
+
+def delete_file():
+    listbox.delete(tk.ANCHOR)
     return
 
 window = Tk()
@@ -45,13 +49,13 @@ listbox.place(x=550.0, y=130.0, width=200.0, height=150.0)
 
 #Remove button, on click remove a path from the listbox-
 remove_button_image = PhotoImage(file=relative_to_assets("button_3.png"))
-remove_button = Button(image=remove_button_image, borderwidth=0, highlightthickness=0, command=lambda: print("delete"), relief="flat")
+remove_button = Button(image=remove_button_image, borderwidth=0, highlightthickness=0, command=delete_file, relief="flat")
 remove_button.place(x=550.0, y=310.0, width=200.0, height=50.0)
 
 
 #Upload button, on click open task to select file-
 upload_button_image = PhotoImage(file=relative_to_assets("button_1.png"))
-upload_button = Button(image=upload_button_image, borderwidth=0, highlightthickness=0, command=select_file, relief="flat")
+upload_button = Button(image=upload_button_image, borderwidth=0, highlightthickness=0, command=upload_file, relief="flat")
 upload_button.place(x=550.0, y=380.0, width=200.0, height=50.0)
 
 
