@@ -42,8 +42,8 @@ listbox = Listbox(window)
 listbox.place(x=550.0, y=130.0, width=200.0, height=150.0)
 
 #Remove button, on click remove a path from the listbox-
-remove_button_image = PhotoImage(file=relative_to_assets("button_1.png"))
-remove_button = Button(image=remove_button_image, borderwidth=0, highlightthickness=0, command=select_file, relief="flat")
+remove_button_image = PhotoImage(file=relative_to_assets("button_3.png"))
+remove_button = Button(image=remove_button_image, borderwidth=0, highlightthickness=0, command=lambda: print("delete"), relief="flat")
 remove_button.place(x=550.0, y=310.0, width=200.0, height=50.0)
 
 
