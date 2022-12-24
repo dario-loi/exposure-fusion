@@ -6,6 +6,7 @@ from tkinter.messagebox import showinfo
 from tkinter import Listbox
 from image_slider import *
 
+from os import getcwd
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"elements")
@@ -28,7 +29,7 @@ def upload_file():
 
     path_list += fd.askopenfilenames(
         title='Open a file',
-        initialdir='/',
+        initialdir=getcwd(),
         filetypes=filetypes)
     for element in path_list:
         listbox.insert(0, element)
