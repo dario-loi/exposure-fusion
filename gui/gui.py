@@ -93,11 +93,9 @@ execute_button = Button(image=execute_button_image, borderwidth=0,
                         highlightthickness=0, command=lambda: print("button_2 clicked"), relief="flat")
 execute_button.place(x=550.0, y=490.0, width=200.0, height=50.0)
 
-
 # Text
 main_frame.create_text(540.0, 575.0, anchor="nw",
                        text="©Copyright 2022 Gezzi Flavio and Loi Dario", fill="#000000", font=("Inter", 12 * -1))
-
 
 # Slider Frame
 slider_frame = Canvas(window, bg="#FFFFFF", height=600,
