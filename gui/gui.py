@@ -5,6 +5,7 @@ from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 from tkinter import Listbox
 from image_slider import *
+import tkinter
 
 from os import getcwd
 
@@ -42,9 +43,16 @@ def delete_file():
 
 
 window = Tk()
-
-window.geometry("800x600")
+screen_width = window.winfo_screenwidth()  # Width of the screen
+screen_height = window.winfo_screenheight() # Height of the screen
+ 
+# Calculate Starting X and Y coordinates for Window
+x = (screen_width/2) - (800/2)
+y = (screen_height/2) - (600/2)
+ 
+window.geometry('%dx%d+%d+%d' % (800, 600, x, y)) # Set the window size and center in the screen
 window.configure(bg="#FFFFFF")
+
 
 # Main frame
 main_frame = Canvas(master=window, bg="#FFFFFF", height=600,
@@ -102,6 +110,5 @@ def build():
     window.resizable(False, False)
     window.title("Exposure fusions")
     window.mainloop()
-
 
 build()
