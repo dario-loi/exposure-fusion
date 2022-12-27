@@ -16,7 +16,6 @@ ASSETS_PATH = OUTPUT_PATH / Path(r"elements")
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
-
 def upload_file():
     path_list = []
 
@@ -73,14 +72,14 @@ listbox.place(x=550.0, y=130.0, width=200.0, height=150.0)
 remove_button_image = PhotoImage(file=relative_to_assets("button_3.png"))
 remove_button = Button(image=remove_button_image, borderwidth=0,
                        highlightthickness=0, command=delete_file, relief="flat")
-remove_button.place(x=550.0, y=310.0, width=200.0, height=50.0)
+remove_button.place(x=550.0, y=330.0, width=200.0, height=50.0)
 
 
 # Upload button, on click open task to select file-
 upload_button_image = PhotoImage(file=relative_to_assets("button_1.png"))
 upload_button = Button(image=upload_button_image, borderwidth=0,
                        highlightthickness=0, command=upload_file, relief="flat")
-upload_button.place(x=550.0, y=380.0, width=200.0, height=50.0)
+upload_button.place(x=550.0, y=390.0, width=200.0, height=50.0)
 
 
 # Line
@@ -92,6 +91,15 @@ execute_button_image = PhotoImage(file=relative_to_assets("button_2.png"))
 execute_button = Button(image=execute_button_image, borderwidth=0,
                         highlightthickness=0, command=lambda: print("button_2 clicked"), relief="flat")
 execute_button.place(x=550.0, y=490.0, width=200.0, height=50.0)
+
+
+# Checkboxes
+var1 = tk.IntVar()
+var2 = tk.IntVar()
+c1 = tk.Checkbutton(window, text='Align images',variable=var1, onvalue=1, offvalue=0)
+c1.place(x=540.0, y=290.0)
+c2 = tk.Checkbutton(window, text='Use Softmax',variable=var2, onvalue=1, offvalue=0)
+c2.place(x=650.0, y=290.0)
 
 # Text
 main_frame.create_text(540.0, 575.0, anchor="nw",
