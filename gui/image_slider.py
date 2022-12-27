@@ -19,13 +19,13 @@ class Application(tk.Frame):
         # CREATING IMAGES
         
         size = (500, 600)
-        self.img1 = ImageTk.PhotoImage(Image.open("gui/elements/test2.png").resize(size))
+        self.img1 = ImageTk.PhotoImage(Image.open("gui/elements/ldr_images.jpg").resize(size))
         self.canv1 = tk.Canvas(self, width=500, height=600, 
             highlightthickness=0, bd=0)
         self.canv1.grid(row=0, column=0, sticky="nsew")
         self.canv1.create_image(500/2, 600/2, image=self.img1, anchor="center")
 
-        self.img2 = ImageTk.PhotoImage(Image.open("gui/elements/test1.png").resize(size))
+        self.img2 = ImageTk.PhotoImage(Image.open("gui/elements/hdr_images.jpg").resize(size))
         self.canv2 = tk.Canvas(self, width=500, height=600, 
             highlightthickness=0, bd=0)
         self.canv2.grid(row=0, column=0, sticky="nsw")
