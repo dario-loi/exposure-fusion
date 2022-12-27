@@ -8,6 +8,55 @@ else:
     from __builtin__ import isinstance
 
 
+def hdr(images: "list[np.ndarray]", perform_alignment: bool = True, use_softmax: bool = True) -> np.ndarray:
+    """hdr Performs exposure fusion on a list of images.
+
+    Parameters
+    ----------
+    images : list[np.ndarray]
+        A list of RGB images to be fused, obtained through cv2.imread.
+    perform_alignment : bool, optional
+        Whether to perform preliminary alignment on the images, by default True
+    use_softmax : bool, optional
+        Whether to use softmax instead of the traditional weight normalization
+        algorithm, by default True
+
+    Returns
+    -------
+    np.ndarray
+        A single RGB HDR image, resulting from the fusion of the input images.
+    """
+
+    # Check if there are at least two images
+    assert len(images) > 1
+
+    # Check if all images have the same dimensions
+    assert all([images[0].shape == elem for elem in [
+               img.shape for img in images]])
+
+    # Check if all images are RGB
+    assert all([len(img.shape) == 3 for img in images]) and all(
+        [img.shape[2] == 3 for img in images])
+
+    # Check if all images are uint8
+    assert all([isinstance(img, np.uint8) for img in images])
+
+    # Align images
+    images = align(images)
+
+    # Compute weights
+
+    weights = compute_weights(images, time_decay=None)
+
+    # Compute the Pyramids
+
+    # Combine the pyramids
+
+    # Collapse the pyramids
+
+    # Return the result
+
+
 def compute_weights(images, time_decay):
     (w_c, w_s, w_e) = (1, 1, 1)
 
@@ -218,4 +267,4 @@ for i in range(1, 4):
 
     hdr = exposure_fusion(align_images(images))
     cv2.imwrite(f"A_{i}.png", hdr)
- ##fix path for mac
+ # fix path for mac

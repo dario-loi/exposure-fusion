@@ -145,6 +145,7 @@ if __name__ == "__main__":
         cv2.resizeWindow("Warped", dst.shape[1]//8, dst.shape[0]//8)
 
         cv2.imshow("Warped", dst)
+        cv2.imwrite("warped.png", dst)
 
         cv2.waitKey(0)
     except:
