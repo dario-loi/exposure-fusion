@@ -1,60 +1,14 @@
+
+
 import numpy as np
 import cv2
 import sys
-PY3 = sys.version_info > (3,)
-if PY3:
-    from builtins import isinstance
-else:
-    from __builtin__ import isinstance
+import logging
 
+from builtins import isinstance
 
-def hdr(images: "list[np.ndarray]", perform_alignment: bool = True, use_softmax: bool = True) -> np.ndarray:
-    """hdr Performs exposure fusion on a list of images.
-
-    Parameters
-    ----------
-    images : list[np.ndarray]
-        A list of RGB images to be fused, obtained through cv2.imread.
-    perform_alignment : bool, optional
-        Whether to perform preliminary alignment on the images, by default True
-    use_softmax : bool, optional
-        Whether to use softmax instead of the traditional weight normalization
-        algorithm, by default True
-
-    Returns
-    -------
-    np.ndarray
-        A single RGB HDR image, resulting from the fusion of the input images.
-    """
-
-    # Check if there are at least two images
-    assert len(images) > 1
-
-    # Check if all images have the same dimensions
-    assert all([images[0].shape == elem for elem in [
-               img.shape for img in images]])
-
-    # Check if all images are RGB
-    assert all([len(img.shape) == 3 for img in images]) and all(
-        [img.shape[2] == 3 for img in images])
-
-    # Check if all images are uint8
-    assert all([isinstance(img, np.uint8) for img in images])
-
-    # Align images
-    images = align(images)
-
-    # Compute weights
-
-    weights = compute_weights(images, time_decay=None)
-
-    # Compute the Pyramids
-
-    # Combine the pyramids
-
-    # Collapse the pyramids
-
-    # Return the result
+#import dataclass
+from dataclasses import dataclass
 
 
 def compute_weights(images, time_decay):
@@ -194,67 +148,6 @@ def exposure_fusion(images, depth=3, time_decay=None):
     return fusion
 
 
-def align_images(images):
-
-    if not isinstance(images, list) or len(images) < 2:
-        print("Input has to be a list of at least two images")
-        return None
-
-    size = images[0].shape
-    for i in range(len(images)):
-        if not images[i].shape == size:
-            print("Input images have to be of the same size")
-            return None
-
-    # Convert images to grayscale
-    gray_images = []
-    for image in images:
-        gray_images.append(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
-
-    model_image = gray_images[0]
-
-    # Find size of images
-    sz = model_image.shape
-
-    # Define the motion model
-    warp_mode = cv2.MOTION_TRANSLATION
-
-    # Define 2x3 or 3x3 matrices and initialize the matrix to identity
-    if warp_mode == cv2.MOTION_HOMOGRAPHY:
-        warp_matrix = np.eye(3, 3, dtype=np.float32)
-    else:
-        warp_matrix = np.eye(2, 3, dtype=np.float32)
-
-    # Specify the number of iterations.
-    number_of_iterations = 5000
-
-    # Specify the threshold of the increment in the correlation coefficient between two iterations
-    termination_eps = 1e-10
-
-    # Define termination criteria
-    criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT,
-                number_of_iterations, termination_eps)
-
-    # Run the ECC algorithm. The results are stored in warp_matrix.
-    aligned_images = [images[0]]
-    for i in range(1, len(images)):
-        (cc, warp_matrix) = cv2.findTransformECC(model_image,
-                                                 gray_images[i], warp_matrix, warp_mode, criteria, inputMask=None, gaussFiltSize=3)
-
-        if warp_mode == cv2.MOTION_HOMOGRAPHY:
-            # Use warpPerspective for Homography
-            aligned_image = cv2.warpPerspective(
-                images[i], warp_matrix, (sz[1], sz[0]), flags=cv2.INTER_LINEAR + cv2.WARP_INVERSE_MAP)
-        else:
-            # Use warpAffine for Translation, Euclidean and Affine
-            aligned_image = cv2.warpAffine(
-                images[i], warp_matrix, (sz[1], sz[0]), flags=cv2.INTER_LINEAR + cv2.WARP_INVERSE_MAP)
-
-        aligned_images.append(aligned_image)
-
-    return aligned_images
-
-
 for i in range(1, 4):
 
     [print(f"data/pictures/HDR_test_scene_{i}__1.{i}.{j}.png") for j in range(
@@ -265,6 +158,6 @@ for i in range(1, 4):
 
     print(len(images))
 
-    hdr = exposure_fusion(align_images(images))
+    hdr = exposure_fusion(images)
     cv2.imwrite(f"A_{i}.png", hdr)
  # fix path for mac
