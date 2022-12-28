@@ -161,7 +161,7 @@ class ExposureFusion():
 
         return hdr_image
 
-    def align_images(self, images: "list[np.ndarray]") -> "list[np.ndarray]":
+    def align_images(self, in_images: "list[np.ndarray]") -> "list[np.ndarray]":
         """align_images Performs image alignment on the input images
 
         This method is not meant to be called directly, but rather as a preprocessing step
@@ -169,7 +169,7 @@ class ExposureFusion():
 
         Parameters
         ----------
-        images : list[np.ndarray]
+        in_images : list[np.ndarray]
             A list of numpy arrays, all of the same shape and with RGB channels last.
             the individual images should be of the same scene at different levels of exposure.
 
@@ -181,7 +181,37 @@ class ExposureFusion():
             The aligned images
         """
 
-        center_indx = len(images) // 2
+        center_indx = len(in_images) // 2
+
+        images = in_images.copy()
+
+        """ 
+            We perform the following preprocessing steps on the images:
+            1. Histogram equalization
+            2. Gaussian blur
+            3. Grayscaling
+            
+            The histogram is equalized to improve the contrast of the image, the gaussian 
+            blur is used to reduce noise and the grayscaling is used to reduce the number
+            of features to match.
+        """
+
+        # Histogram equalization
+        for idx, img in enumerate(images):
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
+            img[:, :, 0] = cv2.equalizeHist(img[:, :, 0])
+            img = cv2.cvtColor(img, cv2.COLOR_YUV2RGB)
+            images[idx] = img
+
+        # Gaussian blur
+        for idx, img in enumerate(images):
+            img = cv2.GaussianBlur(img, (3, 3), 0)
+            images[idx] = img
+
+        # Grayscaling
+        for idx, img in enumerate(images):
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+            images[idx] = img
 
         # Find the center image, which will be used to align the other images to
         reference_img = images[center_indx]
@@ -206,11 +236,11 @@ class ExposureFusion():
                 [kp[m.trainIdx].pt for m in matches]).reshape(-1, 1, 2)
 
             M, _ = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
-            img = cv2.warpPerspective(img, M, img.shape[:2][::-1])
+            img = cv2.warpPerspective(in_images[idx], M, img.shape[:2][::-1])
 
-            images[idx] = img
+            in_images[idx] = img
 
-        return images
+        return in_images
 
     def calculate_weights(self, images: "list[np.ndarray]") -> "list[np.ndarray]":
         """calculate_weights Calculates the weights for each image in the input list
@@ -245,19 +275,21 @@ class ExposureFusion():
             w_s = self.calculate_saturation_weight(image)
             w_e = self.calculate_exposure_weight(image)
 
-            w = (w_c ** self.exponents.e_contrast) * \
-                (w_s ** self.exponents.e_contrast) * \
-                (w_e ** self.exponents.e_exposedness)
+            w = ((w_c ** self.exponents.e_contrast) + 1) * \
+                ((w_s ** self.exponents.e_contrast) + 1) * \
+                ((w_e ** self.exponents.e_exposedness) + 1)
 
             # Apply e^x to the weights so that normalization comes out to be a softmax
             if self.use_softmax:
                 w = np.exp(w)
 
             weights.append(w)
+
             weights_sum += w
 
         # Normalize weights
-        weights = [np.uint8(255 * w / weights_sum) for w in weights]
+        weights = [np.uint8(255 * w / weights_sum)
+                   for w in weights]
 
         return weights
 
@@ -277,9 +309,6 @@ class ExposureFusion():
 
         # Convert to grayscale
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-        # Apply a soft Gaussian blur to the image to reduce noise
-        gray = cv2.GaussianBlur(gray, (0, 0), self.sigma)
 
         # Calculate Laplacian
         laplacian = cv2.Laplacian(gray, cv2.CV_32F)
@@ -326,6 +355,11 @@ class ExposureFusion():
         """
 
         # Calculate exposure
+        logging.info("Calculating exposure weight")
+        logging.info(
+            f"""Image dtype: {image.dtype}, shape: {image.shape}, 
+                max: {np.max(image)}, min: {np.min(image)}""")
+
         exposure = np.prod(
             np.exp(-((image - 0.5)**2)/(2*self.sigma)), axis=2, dtype=np.float32)
 
@@ -452,8 +486,6 @@ class ExposureFusion():
         for i in range(1, len(laplacian_pyramid)):
             size = (laplacian_pyramid[i].shape[1],
                     laplacian_pyramid[i].shape[0])
-
-            print("Shapes: ", res.shape, size)
             res = cv2.pyrUp(res, dstsize=size)
             res = cv2.add(res, laplacian_pyramid[i])
 
@@ -462,13 +494,13 @@ class ExposureFusion():
 
 if __name__ == "__main__":
 
-    fuser = ExposureFusion(perform_alignment=False, use_softmax=False, pyramid_levels=5, sigma=0.2)
+    fuser = ExposureFusion(perform_alignment=True,
+                           use_softmax=True, pyramid_levels=3, sigma=0.4)
 
-    i = 1
     images = [cv2.imread(
-        f"data/pictures/HDR_test_scene_{i}__1.{i}.{j}.png") for j in range(1, 6)]
+        f"data/pictures/HDR_test_scene_2__1.2.{j}.png") for j in range(1, 6)]
 
     HDR = fuser(images)
 
     if HDR is not None:
-        cv2.imwrite("data/pictures/HDR_test_scene_1.png", HDR)
+        cv2.imwrite("data/pictures/HDR_test_scene_2.png", HDR)

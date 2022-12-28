@@ -1,6 +1,6 @@
 """
     We want to find the homography between two images.
-    
+
     We will use an ORB detector to find the keypoints and descriptors.
     we will then use matching keypoints to find the homography.
 """
@@ -26,23 +26,25 @@ logging.info("Starting...")
     based alignment, we will perform histogram equalization on the Y channel of the
     images, which is the luminance channel.
 
-    by having a more uniform illumination across the single image and similar 
-    image distributions across the pairs, we can expect to have better results, 
-    we will especially reduce drastically the effect of shadows and bright spots, 
+    by having a more uniform illumination across the single image and similar
+    image distributions across the pairs, we can expect to have better results,
+    we will especially reduce drastically the effect of shadows and bright spots,
     slashing down on the amount of false positives.
 
     """
 
 
 def run_histogram_equalization(rgb_img):
-    # convert from RGB color-space to YCrCb
-    ycrcb_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2YCrCb)
 
-    # equalize the histogram of the Y channel
-    ycrcb_img[:, :, 0] = cv2.equalizeHist(ycrcb_img[:, :, 0])
+    # convert from RGB color-space to YCrCb
+    ycrcb_img = cv2.cvtColor(rgb_img, cv2.COLOR_RGB2YCrCb)
+
 
     # convert back to RGB color-space from YCrCb
-    equalized_img = cv2.cvtColor(ycrcb_img, cv2.COLOR_YCrCb2BGR)
+    equalized_img = cv2.cvtColor(ycrcb_img, cv2.COLOR_YCrCb2RGB)
+
+    # convert to grayscale for ORB
+    equalized_img = cv2.cvtColor(equalized_img, cv2.COLOR_RGB2GRAY)
 
     return equalized_img
 
@@ -85,8 +87,9 @@ if __name__ == "__main__":
         cv2.imshow("img2", img2_norm)
         cv2.waitKey(0)
 
-        #cv2.rotate(cv2.imread(filenames[1]), cv2.ROTATE_90_CLOCKWISE)
-        #cv2.warpAffine(img1, np.float32([[1, 0, 0], [0, 1, 0]]), (img1.shape[1], img1.shape[0]))
+        cv2.rotate(cv2.imread(filenames[1]), cv2.ROTATE_90_CLOCKWISE)
+        cv2.warpAffine(img1, np.float32(
+            [[1, 0, 0], [0, 1, 0]]), (img1.shape[1], img1.shape[0]))
 
         # Initiate ORB detector
         orb = cv2.ORB_create()
@@ -104,21 +107,41 @@ if __name__ == "__main__":
         kp1, des1 = orb.detectAndCompute(img1_norm, None)
         kp2, des2 = orb.detectAndCompute(img2_norm, None)
 
-        # create BFMatcher object
-        bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
+        FLANN_INDEX_LSH = 6
+        index_params = dict(algorithm=FLANN_INDEX_LSH,
+                            table_number=6,  # 12
+                            key_size=12,     # 20
+                            multi_probe_level=1)  # 2
+        # create KNN matcher
+        bf = cv2.FlannBasedMatcher(index_params, dict(checks=50))
 
         # Match descriptors.
-        matches = bf.match(des1, des2)
+        matches = list(bf.knnMatch(des1, des2, k=2))
 
+        # Discard any empty matches
+        matches = [x for x in matches if len(x) == 2]
         logging.info("Found %d matches", len(matches))
+        # Ratio test as per Lowe's paper
 
-        # Sort them in the order of their distance.
-        matches = sorted(matches, key=lambda x: x.distance)
+        if matches is None:
+            logging.error("No matches found, aborting.")
+            raise Exception("No matches found, aborting.")
 
-        # Draw first 32 matches.
+        good = []
+        try:
+            for i, (m, n) in enumerate(matches):
+                if m.distance < 0.75 * n.distance:
+                    good.append(m)
+        except Exception as e:
+            logging.exception(e)
+            logging.info("Encountered empty match, continuing.")
+            logging.info("Error happened at index %d", i)
 
-        MATCHES_TO_CONSIDER = 32
-        matches = matches[:MATCHES_TO_CONSIDER]
+        logging.info("Found %d good matches", len(good))
+
+        matches = good
+
+        # draw first 16 matches.
 
         img3 = cv2.drawMatches(img1, kp1, img2, kp2, matches, None, flags=2)
 
@@ -137,7 +160,8 @@ if __name__ == "__main__":
 
         M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
 
-        dst = cv2.warpPerspective(img1, M, (img2.shape[1], img2.shape[0]))
+        dst = cv2.warpPerspective(img1, M, (img2.shape[1], img2.shape[0]), flags=cv2.INTER_LINEAR,
+                                  borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0))
 
         # create window
 

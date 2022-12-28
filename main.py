@@ -158,6 +158,6 @@ for i in range(1, 4):
 
     print(len(images))
 
-    hdr = exposure_fusion(images)
+    hdr = exposure_fusion(images, depth=1)
     cv2.imwrite(f"A_{i}.png", hdr)
  # fix path for mac
