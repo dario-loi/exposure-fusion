@@ -9,10 +9,10 @@ from builtins import isinstance
 #import dataclass
 from dataclasses import dataclass
 
-
 logging.basicConfig(level=logging.INFO, filename="out.log", filemode="w",
                     format="hdr-fusion - %(asctime)s - %(levelname)s - %(message)s",
                     datefmt="%d-%b-%y %H:%M:%S")
+
 logging.getLogger().addHandler(logging.StreamHandler())
 
 
@@ -32,7 +32,7 @@ class ExposureFusion():
 
     def __init__(self, perform_alignment: bool = True, use_softmax: bool = True,
                  exponents: Exponents = Exponents(1., 1., 1.), sigma: float = 0.2,
-                 matches_to_consider: int = 32, pyramid_levels: int = 5):
+                 matches_to_consider: int = 32, pyramid_levels: int = 3):
         """__init__ Sets the parameters for the ExposureFusion functor.
 
         Parameters
@@ -53,8 +53,8 @@ class ExposureFusion():
             The number of matches to consider when performing image alignment, 
             by default 32
         pyramid_levels : int, optional
-            The number of levels to use in the Gaussian and Laplacian pyramids, by default 5
-            deeper pyramids take longer but can provide better results.
+            The number of levels to use in the Gaussian and Laplacian pyramids, by default 3,
+            deeper pyramids introduce more artifacts.
         """
 
         self.perform_alignment: bool = perform_alignment
@@ -63,6 +63,12 @@ class ExposureFusion():
         self.sigma: float = sigma ** 2
         self.matches_to_consider: int = 32
         self.pyramid_levels: int = pyramid_levels
+
+        assert isinstance(
+            self.exponents, Exponents), "exponents must be of type Exponents"
+        assert self.sigma > 0, "sigma must be positive"
+        assert self.matches_to_consider > 0, "matches_to_consider must be positive"
+        assert self.pyramid_levels >= 1, "pyramid_levels must be at least 1"
 
         if self.perform_alignment:
             import cv2
@@ -198,9 +204,9 @@ class ExposureFusion():
 
         # Histogram equalization
         for idx, img in enumerate(images):
-            img = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
             img[:, :, 0] = cv2.equalizeHist(img[:, :, 0])
-            img = cv2.cvtColor(img, cv2.COLOR_YUV2RGB)
+            img = cv2.cvtColor(img, cv2.COLOR_YUV2BGR)
             images[idx] = img
 
         # Gaussian blur
@@ -210,7 +216,7 @@ class ExposureFusion():
 
         # Grayscaling
         for idx, img in enumerate(images):
-            img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             images[idx] = img
 
         # Find the center image, which will be used to align the other images to
@@ -332,11 +338,8 @@ class ExposureFusion():
             The saturation weight for the input image
         """
 
-        # Convert to HSV
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-
         # Calculate saturation
-        saturation = hsv[:, :, 1]
+        saturation = image.std(axis=2)
 
         return saturation
 
@@ -355,11 +358,6 @@ class ExposureFusion():
         """
 
         # Calculate exposure
-        logging.info("Calculating exposure weight")
-        logging.info(
-            f"""Image dtype: {image.dtype}, shape: {image.shape}, 
-                max: {np.max(image)}, min: {np.min(image)}""")
-
         exposure = np.prod(
             np.exp(-((image - 0.5)**2)/(2*self.sigma)), axis=2, dtype=np.float32)
 
@@ -397,6 +395,8 @@ class ExposureFusion():
                     gaussian_pyramid.append(weight)
                 else:
                     gaussian_pyramid.append(cv2.pyrDown(gaussian_pyramid[-1]))
+
+            # Display gaussian pyramid
 
             # Create gaussian pyramid for image
             for i in range(self.pyramid_levels):
@@ -495,12 +495,12 @@ class ExposureFusion():
 if __name__ == "__main__":
 
     fuser = ExposureFusion(perform_alignment=True,
-                           use_softmax=True, pyramid_levels=3, sigma=0.4)
+                           use_softmax=True, pyramid_levels=3, sigma=0.2)
 
     images = [cv2.imread(
-        f"data/pictures/HDR_test_scene_2__1.2.{j}.png") for j in range(1, 6)]
+        f"data/pictures/HDR_test_scene_1__1.1.{j}.png") for j in range(2, 5)]
 
     HDR = fuser(images)
 
     if HDR is not None:
-        cv2.imwrite("data/pictures/HDR_test_scene_2.png", HDR)
+        cv2.imwrite("data/pictures/HDR_test_scene_1.png", HDR)
