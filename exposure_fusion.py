@@ -245,10 +245,9 @@ class ExposureFusion():
             w_s = self.calculate_saturation_weight(image)
             w_e = self.calculate_exposure_weight(image)
 
-            # we add one to avoid numerical instability.
-            w = (w_c ** self.exponents.e_contrast + 1) * \
-                (w_s ** self.exponents.e_contrast + 1) * \
-                (w_e ** self.exponents.e_exposedness + 1)
+            w = (w_c ** self.exponents.e_contrast) * \
+                (w_s ** self.exponents.e_contrast) * \
+                (w_e ** self.exponents.e_exposedness)
 
             # Apply e^x to the weights so that normalization comes out to be a softmax
             if self.use_softmax:
@@ -446,6 +445,8 @@ class ExposureFusion():
             The final HDR image
         """
 
+        laplacian_pyramid = laplacian_pyramid[::-1]
+
         res = laplacian_pyramid[0]
 
         for i in range(1, len(laplacian_pyramid)):
@@ -461,7 +462,7 @@ class ExposureFusion():
 
 if __name__ == "__main__":
 
-    fuser = ExposureFusion()
+    fuser = ExposureFusion(perform_alignment=False, use_softmax=False, pyramid_levels=5, sigma=0.2)
 
     i = 1
     images = [cv2.imread(
