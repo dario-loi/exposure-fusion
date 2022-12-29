@@ -18,3 +18,7 @@ No module named 'cv2'
     if you use anaconda, you may simply use this as well (and hence don't need to add menpo channel):
 
         conda install -c conda-forge opencv
+
+No module named 'PIL':
+    if py<3 : paste on terminal: "pip install Pillow"
+    if py3> : paste on terminal "pip3 install Pillow"
