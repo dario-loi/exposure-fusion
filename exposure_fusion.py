@@ -1,19 +1,15 @@
 
+import datetime
 import numpy as np
 import cv2
-import sys
 import logging
+import hashlib
+
 
 from builtins import isinstance
 
 #import dataclass
 from dataclasses import dataclass
-
-logging.basicConfig(level=logging.INFO, filename="out.log", filemode="w",
-                    format="hdr-fusion - %(asctime)s - %(levelname)s - %(message)s",
-                    datefmt="%d-%b-%y %H:%M:%S")
-
-logging.getLogger().addHandler(logging.StreamHandler())
 
 
 @dataclass
@@ -63,6 +59,35 @@ class ExposureFusion():
         self.sigma: float = sigma ** 2
         self.matches_to_consider: int = 32
         self.pyramid_levels: int = pyramid_levels
+
+        """
+            Initialize the logger for the ExposureFusion functor.
+        """
+
+        self.logger = logging.getLogger(hashlib.md5(
+            str(datetime.datetime.now()).encode()).hexdigest())
+
+        self.logger.handlers = []
+
+        self.time_creation = str(datetime.datetime.now()).replace(
+            ":", "-").replace(" ", "_").replace(".", "_").replace("-", "_").replace("/", "_")
+        fileHandler = logging.FileHandler(
+            f"logs/out_{self.time_creation}.log", mode="w")
+        streamHandler = logging.StreamHandler()
+
+        formatter = logging.Formatter(
+            "%(asctime)s - %(levelname)s - %(message)s")
+        datefmt = "%d-%b-%y %H:%M:%S"
+
+        formatter.datefmt = datefmt
+
+        # set formatter and datefmt
+        fileHandler.setFormatter(formatter)
+        streamHandler.setFormatter(formatter)
+
+        self.logger.addHandler(streamHandler)
+        self.logger.addHandler(fileHandler)
+        self.logger.setLevel(logging.INFO)
 
         assert isinstance(
             self.exponents, Exponents), "exponents must be of type Exponents"
@@ -118,51 +143,55 @@ class ExposureFusion():
             assert all([image.shape == images[0].shape for image in images])
             assert all([image.shape[-1] == 3 for image in images])
         except AssertionError as e:
-            logging.exception("Invalid input to ExposureFusion functor")
+            self.logger.exception("Invalid input to ExposureFusion functor")
             return None
 
-        logging.info("Input images are valid, proceeding with Exposure Fusion")
+        self.logger.info(
+            "Input images are valid, proceeding with Exposure Fusion")
+
+        self.logger.info(
+            f"""Processing {len(images)} images, with shape {images[0].shape}""")
 
         if self.perform_alignment:
-            logging.info("Performing image alignment")
+            self.logger.info("Performing image alignment")
             try:
                 images = self.align_images(images)
             except Exception as e:
-                logging.exception("Image alignment failed")
+                self.logger.exception("Image alignment failed")
                 return None
         else:
-            logging.info("Skipping image alignment")
+            self.logger.info("Skipping image alignment")
 
-        logging.info("Calculating weights")
+        self.logger.info("Calculating weights")
 
         try:
             weights = self.calculate_weights(images)
         except Exception as e:
-            logging.exception("Failed to calculate weights")
+            self.logger.exception("Failed to calculate weights")
             return None
 
-        logging.info("Creating image pyramids")
+        self.logger.info("Creating image pyramids")
 
         try:
             gaussians, laplacians = self.create_image_pyramids(images, weights)
         except Exception as e:
-            logging.exception("Failed to create image pyramids")
+            self.logger.exception("Failed to create image pyramids")
             return None
 
-        logging.info("Blending pyramids into final Laplacian")
+        self.logger.info("Blending pyramids into final Laplacian")
 
         try:
             final_laplacian = self.blend_pyramids(gaussians, laplacians)
         except Exception as e:
-            logging.exception("Failed to blend pyramids")
+            self.logger.exception("Failed to blend pyramids")
             return None
 
-        logging.info("Reconstructing final HDR image")
+        self.logger.info("Reconstructing final HDR image")
 
         try:
             hdr_image = self.reconstruct_image(final_laplacian)
         except Exception as e:
-            logging.exception("Failed to reconstruct HDR image")
+            self.logger.exception("Failed to reconstruct HDR image")
             return None
 
         return hdr_image
@@ -230,18 +259,19 @@ class ExposureFusion():
                 continue
 
             kp, des = self.ORB_detector.detectAndCompute(img, None)
-            matches = self.matcher.match(des_ref, des)
+            matches = self.matcher.match(des, des_ref)
             matches = sorted(matches, key=lambda x: x.distance)
 
             # only consider the K best matches, to reduce the effect of outliers.
             matches = matches[:self.matches_to_consider]
 
             src_pts = np.float32(
-                [kp_ref[m.queryIdx].pt for m in matches]).reshape(-1, 1, 2)
+                [kp[m.queryIdx].pt for m in matches]).reshape(-1, 1, 2)
             dst_pts = np.float32(
-                [kp[m.trainIdx].pt for m in matches]).reshape(-1, 1, 2)
+                [kp_ref[m.trainIdx].pt for m in matches]).reshape(-1, 1, 2)
 
             M, _ = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
+
             img = cv2.warpPerspective(in_images[idx], M, img.shape[:2][::-1])
 
             in_images[idx] = img
@@ -495,7 +525,7 @@ class ExposureFusion():
 if __name__ == "__main__":
 
     fuser = ExposureFusion(perform_alignment=True,
-                           use_softmax=True, pyramid_levels=3, sigma=0.2)
+                           use_softmax=False, pyramid_levels=2, sigma=0.2)
 
     images = [cv2.imread(
         f"data/pictures/HDR_test_scene_1__1.1.{j}.png") for j in range(2, 5)]

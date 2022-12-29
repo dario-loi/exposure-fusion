@@ -441,3 +441,6 @@ FodyWeavers.xsd
 *.rc
 *.check_cache
 out/
+*.fdb_latexmk
+*.aux
+*.gz
