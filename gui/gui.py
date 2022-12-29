@@ -5,7 +5,10 @@ from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 from tkinter import Listbox
 from image_slider import *
-import tkinter
+#from exposure_fusion import ExposureFusion
+
+#fuser = ExposureFusion()
+#HDR = fuser(images)
 
 from os import getcwd
 
@@ -65,7 +68,7 @@ main_frame.create_text(570, 30.0, anchor="nw", text="Exposure \n  fusions",
                        fill="#000000", font=("Inter Bold", 38 * -1))
 
 # Listbox path
-listbox = Listbox(window)
+listbox = Listbox(window, background="#FFFFFF", foreground="#000000")
 listbox.place(x=550.0, y=130.0, width=200.0, height=150.0)
 
 # Remove button, on click remove a path from the listbox-
@@ -95,7 +98,7 @@ execute_button.place(x=550.0, y=490.0, width=200.0, height=50.0)
 
 # Checkboxes
 var1 = tk.IntVar()
-c1 = tk.Checkbutton(window, text='Align images',variable=var1, onvalue=1, offvalue=0)
+c1 = tk.Checkbutton(window, text='Align images',variable=var1, onvalue=1, offvalue=0, background="#FFFFFF", foreground="#000000")
 c1.place(x=550.0, y=290.0)
 
 # Text
