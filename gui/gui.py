@@ -95,11 +95,8 @@ execute_button.place(x=550.0, y=490.0, width=200.0, height=50.0)
 
 # Checkboxes
 var1 = tk.IntVar()
-var2 = tk.IntVar()
 c1 = tk.Checkbutton(window, text='Align images',variable=var1, onvalue=1, offvalue=0)
-c1.place(x=540.0, y=290.0)
-c2 = tk.Checkbutton(window, text='Use Softmax',variable=var2, onvalue=1, offvalue=0)
-c2.place(x=650.0, y=290.0)
+c1.place(x=550.0, y=290.0)
 
 # Text
 main_frame.create_text(540.0, 575.0, anchor="nw",
