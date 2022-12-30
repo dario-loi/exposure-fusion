@@ -5,12 +5,11 @@ from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 from tkinter import Listbox
 from image_slider import *
-#from exposure_fusion import ExposureFusion
-
-#fuser = ExposureFusion()
-#HDR = fuser(images)
-
 from os import getcwd
+import cv2
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from exposure_fusion import ExposureFusion
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"elements")
