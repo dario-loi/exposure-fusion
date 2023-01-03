@@ -43,6 +43,17 @@ def delete_file():
     return
 
 
+def execute_file():
+    fuser = ExposureFusion(perform_alignment=bool(var1.get()), use_softmax=False, pyramid_levels=2, sigma=0.2)
+
+    images = [cv2.imread(elements) for elements in listbox.get(0, tk.END)]
+
+    HDR = fuser(images)
+
+    if HDR is not None:
+        cv2.imwrite("data/pictures/HDR_test_scene_1.png", HDR)
+    return
+
 window = Tk()
 screen_width = window.winfo_screenwidth()  # Width of the screen
 screen_height = window.winfo_screenheight() # Height of the screen
@@ -88,17 +99,17 @@ upload_button.place(x=550.0, y=390.0, width=200.0, height=50.0)
 main_frame.create_line(550.0, 460.0, 750.0, 460.0, fill="#000000", width=1.0)
 
 
-# Execute button, on click execute the task-
-execute_button_image = PhotoImage(file=relative_to_assets("button_2.png"))
-execute_button = Button(image=execute_button_image, borderwidth=0,
-                        highlightthickness=0, command=lambda: print("button_2 clicked"), relief="flat")
-execute_button.place(x=550.0, y=490.0, width=200.0, height=50.0)
-
-
 # Checkboxes
 var1 = tk.IntVar()
 c1 = tk.Checkbutton(window, text='Align images',variable=var1, onvalue=1, offvalue=0, background="#FFFFFF", foreground="#000000")
 c1.place(x=550.0, y=290.0)
+
+# Execute button, on click execute the task-
+execute_button_image = PhotoImage(file=relative_to_assets("button_2.png"))
+execute_button = Button(image=execute_button_image, borderwidth=0,
+                        highlightthickness=0, command= execute_file(), relief="flat")
+execute_button.place(x=550.0, y=490.0, width=200.0, height=50.0)
+
 
 # Text
 main_frame.create_text(540.0, 575.0, anchor="nw",
