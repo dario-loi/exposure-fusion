@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 import logging
 import hashlib
-
+import os
 
 from builtins import isinstance
 
@@ -67,6 +67,9 @@ class ExposureFusion():
 
         self.time_creation = str(datetime.datetime.now()).replace(
             ":", "-").replace(" ", "_").replace(".", "_").replace("-", "_").replace("/", "_")
+
+        os.path.exists("logs") or os.mkdir("logs")
+
         fileHandler = logging.FileHandler(
             f"logs/out_{self.time_creation}.log", mode="w")
         streamHandler = logging.StreamHandler()

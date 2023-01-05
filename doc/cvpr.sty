@@ -1,0 +1,60 @@
+% ---------------------------------------------------------------
+%
+% $Id: cvpr.sty,v 1.3 2005/10/24 19:56:15 awf Exp $
+%
+% by Paolo.Ienne@di.epfl.ch
+% some mods by awf@acm.org
+%
+% ---------------------------------------------------------------
+%
+% no guarantee is given that the format corresponds perfectly to
+% IEEE 8.5" x 11" Proceedings, but most features should be ok.
+%
+% ---------------------------------------------------------------
+% with LaTeX2e:
+% =============
+%
+% use as
+%   \documentclass[times,10pt,twocolumn]{article}
+%   \usepackage{latex8}
+%   \usepackage{times}
+%
+% ---------------------------------------------------------------
+
+% with LaTeX 2.09:
+% ================
+%
+% use as
+%   \documentstyle[times,art10,twocolumn,latex8]{article}
+%
+% ---------------------------------------------------------------
+% with both versions:
+% ===================
+%
+% specify \cvprfinalcopy to emit the final camera-ready copy
+%
+% specify references as
+%   \bibliographystyle{ieee}
+%   \bibliography{...your files...}
+%
+% ---------------------------------------------------------------
+
+\usepackage{eso-pic}
+\usepackage{xspace}
+
+
+% Add a period to the end of an abbreviation unless there's one
+% already, then \xspace.
+\makeatletter
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+
+\def\eg{\emph{e.g}\onedot} \def\Eg{\emph{E.g}\onedot}
+\def\ie{\emph{i.e}\onedot} \def\Ie{\emph{I.e}\onedot}
+\def\cf{\emph{c.f}\onedot} \def\Cf{\emph{C.f}\onedot}
+\def\etc{\emph{etc}\onedot} \def\vs{\emph{vs}\onedot}
+\def\wrt{w.r.t\onedot} \def\dof{d.o.f\onedot}
+\def\etal{\emph{et al}\onedot}
+\makeatother
+
+% ---------------------------------------------------------------

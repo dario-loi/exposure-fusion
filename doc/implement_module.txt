@@ -1,0 +1,24 @@
+No module named 'numpy':
+    if py<3 : paste on terminal: "pip install numpy"
+    if py3> : paste on terminal "pip3 install numpy"
+
+
+No module named 'cv2'
+    First do run these commands inside Terminal/CMD:
+
+    conda update anaconda-navigator  
+    conda update navigator-updater  
+    Then the issue for the instruction below will be resolved
+
+    If you have anaconda installed, you can simply do
+
+        if py<3 : "pip install opencv-python"
+        if py3> : "pip3 install opencv-python"
+    
+    if you use anaconda, you may simply use this as well (and hence don't need to add menpo channel):
+
+        conda install -c conda-forge opencv
+
+No module named 'PIL':
+    if py<3 : paste on terminal: "pip install Pillow"
+    if py3> : paste on terminal "pip3 install Pillow"
