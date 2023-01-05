@@ -18,14 +18,14 @@ class Application(tk.Frame):
         FILL_FACTOR = 1.50
         size = (int(730 * FILL_FACTOR), int(410 * FILL_FACTOR))
         self.img1 = ImageTk.PhotoImage(Image.open(
-            "gui/elements/ldr_image.png").resize(size))
+            "gui/elements/hdr_image.png").resize(size))
         self.canv1 = tk.Canvas(self, width=500, height=600,
                                highlightthickness=0, bd=0)
         self.canv1.grid(row=0, column=0, sticky="nsew")
         self.canv1.create_image(500/2, 600/2, image=self.img1, anchor="center")
 
         self.img2 = ImageTk.PhotoImage(Image.open(
-            "gui/elements/hdr_image.png").resize(size))
+            "gui/elements/ldr_image.png").resize(size))
         self.canv2 = tk.Canvas(self, width=500, height=600,
                                highlightthickness=0, bd=0)
         self.canv2.grid(row=0, column=0, sticky="nsw")

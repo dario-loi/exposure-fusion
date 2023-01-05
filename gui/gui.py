@@ -49,14 +49,16 @@ def delete_file():
 
 def execute_file():
 
+    fuser = ExposureFusion(perform_alignment=bool(var1.get()), pyramid_levels=2, sigma=0.2)
+    
     images = [cv2.imread(elements) for elements in listbox.get(0, tk.END)]
-
-    fuser.align_images = bool(var1.get())
 
     HDR = fuser(images)
 
+    path = fd.asksaveasfilename(initialdir=os.getcwd(), defaultextension=".png", title="Save HDR image", filetypes=(("PNG", "*.png"), ("JPG", "*.jpg")))
+
     if HDR is not None:
-        cv2.imwrite("data/pictures/HDR_test_scene_1.png", HDR)
+        cv2.imwrite(path, HDR)
     return
 
 
