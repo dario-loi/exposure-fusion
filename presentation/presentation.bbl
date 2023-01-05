@@ -48,4 +48,8 @@ H.~Bay, T.~Tuytelaars, and L.~Van~Gool, ``Surf: Speeded up robust features,''
   A.~Pinz, Eds.\hskip 1em plus 0.5em minus 0.4em\relax Berlin, Heidelberg:
   Springer Berlin Heidelberg, 2006, pp. 404--417.
 
+\bibitem{hessel:exp_fusion}
+C.~Hessel, ``{Extended Exposure Fusion},'' \emph{{Image Processing On Line}},
+  vol.~9, pp. 453--468, 2019, \url{https://doi.org/10.5201/ipol.2019.278}.
+
 \end{thebibliography}

@@ -1,6 +1,6 @@
-PWD D:\Documents\Cdev\threads\CGProj-Loi-Gezzi\presentation
+PWD D:\Repos\CGProj\presentation
 INPUT C:\Users\candi\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT d:\Documents\Cdev\threads\CGProj-Loi-Gezzi\presentation\presentation.tex
+INPUT d:\Repos\CGProj\presentation\presentation.tex
 OUTPUT presentation.log
 INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\tex\latex\ieeetran\IEEEtran.cls
 INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\tex\latex\ieeetran\IEEEtran.cls
@@ -790,6 +790,10 @@ INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\pd1enc.def
 INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\pd1enc.def
 INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\pd1enc.def
 INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\pd1enc.def
+INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\hyperref-langpatches.def
+INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\hyperref-langpatches.def
+INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\hyperref-langpatches.def
+INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\hyperref-langpatches.def
 INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\tex\generic\intcalc\intcalc.sty
 INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\tex\generic\intcalc\intcalc.sty
 INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\tex\generic\intcalc\intcalc.sty
@@ -1140,7 +1144,7 @@ INPUT .\figures\out_2.png
 INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\helvetic\phvr7t.tfm
 INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\helvetic\phvr7t.vf
 INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\helvetic\phvr8r.tfm
-INPUT C:\Users\candi\AppData\Local\MiKTeX\fonts\map\pdftex\pdftex.map
+INPUT C:\Users\candi\AppData\Local\MiKTeX\pdftex\config\pdftex.map
 INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\helvetic\phvr7t.vf
 INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\helvetic\phvr8r.tfm
 INPUT C:\Users\candi\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\helvetic\phvr7t.vf
