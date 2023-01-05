@@ -15,6 +15,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"elements")
 
+fuser = ExposureFusion(perform_alignment=True, pyramid_levels=3, sigma=0.2)
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -46,11 +47,12 @@ def delete_file():
 
 
 def execute_file():
-    fuser = ExposureFusion(perform_alignment=bool(
-        var1.get()), pyramid_levels=3, sigma=0.2)
+
 
     images = [cv2.imread(elements) for elements in listbox.get(0, tk.END)]
 
+    fuser.align_images = bool(var1.get())
+    
     HDR = fuser(images)
 
     if HDR is not None:
