@@ -17,6 +17,7 @@ ASSETS_PATH = OUTPUT_PATH / Path(r"elements")
 
 fuser = ExposureFusion(perform_alignment=True, pyramid_levels=3, sigma=0.2)
 
+
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
@@ -48,11 +49,10 @@ def delete_file():
 
 def execute_file():
 
-
     images = [cv2.imread(elements) for elements in listbox.get(0, tk.END)]
 
     fuser.align_images = bool(var1.get())
-    
+
     HDR = fuser(images)
 
     if HDR is not None:
@@ -115,7 +115,7 @@ c1.place(x=550.0, y=290.0)
 # Execute button, on click execute the task-
 execute_button_image = PhotoImage(file=relative_to_assets("button_2.png"))
 execute_button = Button(image=execute_button_image, borderwidth=0,
-                        highlightthickness=0, command=lambda x : execute_file(), relief="flat")
+                        highlightthickness=0, command=lambda: execute_file(), relief="flat")
 execute_button.place(x=550.0, y=490.0, width=200.0, height=50.0)
 
 
