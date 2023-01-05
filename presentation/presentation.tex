@@ -203,8 +203,28 @@ dei bordi, come si puó vedere nella figura \ref{fig:align_crusader}.
         Abbiamo applicato il nostro metodo ad una serie di immagini (a, b, c, d, e) ottenute con una fotocamera reflex,
         l'immagine finale (f) non dimostra alcun tipo di deformazione da allineamento, L'illuminazione della lampada 
         é molto piú dolce rispetto alle immagini con forte esposizione, mentre sulla statuetta sono visibili un buon 
-        numero di dettagli.
-    }\label{fig:fusion}
+        numero di dettagli. Possiamo inoltre notare che, in modo analogo a quanto visto per le immagini con flash nella 
+        paper originale\cite{stanford:exposure_fusion}, le immagini LDR ad alta esposizione sono fortemente illuminate 
+        dalla lampada, l'immagine HDR riesce a ridistribuire l'illuminazione in modo tale da consentire una maggior 
+        chiarezza delle aree in penombra.}\label{fig:fusion}
+
+\end{figure*}
+
+\begin{figure*}[ht]
+    \centering
+    \figuretitle{Exposure Fusion - Ulteriori Esempi Reflex} 
+    \subfloat[Input 1]{\includegraphics[width=0.33\textwidth,height=0.13\textheight]{figures/test_2_1.png}} \hfill
+    \subfloat[Input 2]{\includegraphics[width=0.33\textwidth,height=0.13\textheight]{figures/test_2_2.png}} \hfill
+    \subfloat[Input 3]{\includegraphics[width=0.34\textwidth,height=0.13\textheight]{figures/test_2_3.png}}\\[0pt]
+    \subfloat[Input 4]{\includegraphics[width=0.33\textwidth,height=0.13\textheight]{figures/test_2_4.png}} \hfill
+    \subfloat[Input 5]{\includegraphics[width=0.33\textwidth,height=0.13\textheight]{figures/test_2_5.png}} \hfill
+    \subfloat[Output HDR]{\includegraphics[width=0.34\textwidth,height=0.13\textheight]{figures/out_2.png}} \hfill
+
+    \caption[Commento Reflex.]{
+        In seguito possiamo osservare un altra applicazione del nostro metodo, anche qui abbiamo una sequenza di immagini 
+        (a, b, c, d, e) ottenute con una fotocamera reflex, l'immagine finale (f) non dimostra alcun tipo di deformazione
+        e, analogamente al caso precedente.
+        }\label{fig:fusion}
 
 \end{figure*}
 
@@ -217,6 +237,28 @@ a un numero limitato di immagini ottenute con una fotocamera reflex.
 In seguito, verranno mostrati e commentati diversi risultati ottenuti con il nostro metodo, le immagini 
 verranno rese disponibili in allegato in modo da rendere possibile la riproducibilitá dei risultati.
 
+Generalmente, il nostro metodo é in grado di ottenere risultati simili a quelli della paper originale, 
+presentando allo stesso tempo le stesse limitazioni.
+
+É infatti noto agli autori originali che il metodo 
+presenta degli artefatti a bassa frequenza quando la profondita delle piramidi Gaussiane e Laplaciane é troppo 
+bassa, questo problema é risolvibile aumentando la profonditá, cio peró aumenta il tempo di computazione e 
+puó risultare in un secondo tipo di artefatto, in cui i valori di intensitá non sono piú presenti nell'intervallo $(0, 1]$.
+
+\section{Conclusioni}
+
+Crediamo di aver raggiunto risultati solidi, sviluppando un modulo che permette di implementare Exposure Fusion 
+cosi come descrita originariamente. 
+
+Questo documento é accompagnato dalle seguenti risorse:
+
+\begin{itemize}
+    \item Il codice sorgente del modulo, importabile come classe in qualsiasi file python.
+    \item Un file Jupyter Notebook contenente esempi di utilizzo del modulo, atti a riprodurre 
+    i risultati mostrati in questo documento.
+    \item Un applicazione GUI realizzata con la libreria python TKinter, che permette l'interazione     
+    con exposure fusion attraverso un interfaccia grafica.
+\end{itemize}
 
 \bibliographystyle{IEEEtran}
 \bibliography{ref}

@@ -26,7 +26,7 @@ class ExposureFusion():
 
     """
 
-    def __init__(self, perform_alignment: bool = True, use_softmax: bool = True,
+    def __init__(self, perform_alignment: bool = True,
                  exponents: Exponents = Exponents(1., 1., 1.), sigma: float = 0.2,
                  matches_to_consider: int = 32, pyramid_levels: int = 3):
         """__init__ Sets the parameters for the ExposureFusion functor.
@@ -36,9 +36,6 @@ class ExposureFusion():
         perform_alignment : bool, optional
             Whether to perform image alignment between the input LDR images as a 
             preprocessing step, by default True
-        use_softmax : bool, optional
-            Whether to utilize softmax as a non-linearity on the weights when 
-            normalizing them to a distribution, by default True
         exponents : Exponents, optional
             The three exponents for the (R,G,B) channels, by default Exponents(1., 1., 1.),
             as suggested in the paper
@@ -54,7 +51,6 @@ class ExposureFusion():
         """
 
         self.perform_alignment: bool = perform_alignment
-        self.use_softmax: bool = use_softmax
         self.exponents: Exponents = exponents
         self.sigma: float = sigma ** 2
         self.matches_to_consider: int = 32
@@ -115,9 +111,7 @@ class ExposureFusion():
         str
             A string representation of the ExposureFusion functor.
         """
-        return f"""ExposureFusion(perform_alignment={self.perform_alignment}, 
-    use_softmax={self.use_softmax}, exponents={self.exponents}, 
-    sigma={self.sigma}, matches_to_consider={self.matches_to_consider})"""
+        return f"""ExposureFusion(perform_alignment={self.perform_alignment}, exponents={self.exponents}, sigma={self.sigma}, matches_to_consider={self.matches_to_consider})"""
 
     def __call__(self, images: "list[np.ndarray]") -> np.ndarray:
         """__call__ Perform exposure fusion
@@ -151,6 +145,9 @@ class ExposureFusion():
 
         self.logger.info(
             f"""Processing {len(images)} images, with shape {images[0].shape}""")
+
+        # Deep copy the images to avoid modifying the originals
+        images = [image.copy() for image in images]
 
         if self.perform_alignment:
             self.logger.info("Performing image alignment")
@@ -314,10 +311,6 @@ class ExposureFusion():
             w = ((w_c ** self.exponents.e_contrast) + 1) * \
                 ((w_s ** self.exponents.e_contrast) + 1) * \
                 ((w_e ** self.exponents.e_exposedness) + 1)
-
-            # Apply e^x to the weights so that normalization comes out to be a softmax
-            if self.use_softmax:
-                w = np.exp(w)
 
             weights.append(w)
 
@@ -520,17 +513,3 @@ class ExposureFusion():
             res = cv2.add(res, laplacian_pyramid[i])
 
         return res
-
-
-if __name__ == "__main__":
-
-    fuser = ExposureFusion(perform_alignment=True,
-                           use_softmax=False, pyramid_levels=2, sigma=0.2)
-
-    images = [cv2.imread(
-        f"data/pictures/HDR_test_scene_1__1.1.{j}.png") for j in range(2, 5)]
-
-    HDR = fuser(images)
-
-    if HDR is not None:
-        cv2.imwrite("data/pictures/HDR_test_scene_1.png", HDR)
