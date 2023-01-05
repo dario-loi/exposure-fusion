@@ -1,4 +1,5 @@
 # Description: This file contains the code for the GUI of the application
+from exposure_fusion import ExposureFusion
 from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 from tkinter import filedialog as fd
@@ -7,9 +8,9 @@ from tkinter import Listbox
 from image_slider import *
 from os import getcwd
 import cv2
-import sys, os
+import sys
+import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from exposure_fusion import ExposureFusion
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"elements")
@@ -17,6 +18,7 @@ ASSETS_PATH = OUTPUT_PATH / Path(r"elements")
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
+
 
 def upload_file():
     path_list = []
@@ -44,7 +46,8 @@ def delete_file():
 
 
 def execute_file():
-    fuser = ExposureFusion(perform_alignment=bool(var1.get()), use_softmax=False, pyramid_levels=2, sigma=0.2)
+    fuser = ExposureFusion(perform_alignment=bool(
+        var1.get()), pyramid_levels=3, sigma=0.2)
 
     images = [cv2.imread(elements) for elements in listbox.get(0, tk.END)]
 
@@ -54,15 +57,17 @@ def execute_file():
         cv2.imwrite("data/pictures/HDR_test_scene_1.png", HDR)
     return
 
+
 window = Tk()
 screen_width = window.winfo_screenwidth()  # Width of the screen
-screen_height = window.winfo_screenheight() # Height of the screen
- 
+screen_height = window.winfo_screenheight()  # Height of the screen
+
 # Calculate Starting X and Y coordinates for Window
 x = (screen_width/2) - (800/2)
 y = (screen_height/2) - (600/2)
- 
-window.geometry('%dx%d+%d+%d' % (800, 600, x, y)) # Set the window size and center in the screen
+
+# Set the window size and center in the screen
+window.geometry('%dx%d+%d+%d' % (800, 600, x, y))
 window.configure(bg="#FFFFFF")
 
 
@@ -101,13 +106,14 @@ main_frame.create_line(550.0, 460.0, 750.0, 460.0, fill="#000000", width=1.0)
 
 # Checkboxes
 var1 = tk.IntVar()
-c1 = tk.Checkbutton(window, text='Align images',variable=var1, onvalue=1, offvalue=0, background="#FFFFFF", foreground="#000000")
+c1 = tk.Checkbutton(window, text='Align images', variable=var1,
+                    onvalue=1, offvalue=0, background="#FFFFFF", foreground="#000000")
 c1.place(x=550.0, y=290.0)
 
 # Execute button, on click execute the task-
 execute_button_image = PhotoImage(file=relative_to_assets("button_2.png"))
 execute_button = Button(image=execute_button_image, borderwidth=0,
-                        highlightthickness=0, command= execute_file(), relief="flat")
+                        highlightthickness=0, command=lambda x : execute_file(), relief="flat")
 execute_button.place(x=550.0, y=490.0, width=200.0, height=50.0)
 
 
@@ -124,7 +130,8 @@ app = Application(master=slider_frame)
 
 def build():
     window.resizable(False, False)
-    window.title("Exposure fusions")
+    window.title("Exposure Fusion")
     window.mainloop()
+
 
 build()
