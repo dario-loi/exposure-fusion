@@ -15,7 +15,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = os.path.join(OUTPUT_PATH, Path(r"elements"))
 
-fuser = ExposureFusion(perform_alignment=True, pyramid_levels=3, sigma=0.2)
+
 
 def relative_to_assets(path: str) -> Path:
     return os.path.join(ASSETS_PATH, Path(path))
@@ -48,18 +48,19 @@ def delete_file():
 
 def execute_file():
 
-    fuser = ExposureFusion(perform_alignment=bool(
-        var1.get()), pyramid_levels=2, sigma=0.2)
+    fuser = ExposureFusion(perform_alignment=bool(var1.get()), pyramid_levels=3, sigma=0.2)
 
     images = [cv2.imread(elements) for elements in listbox.get(0, tk.END)]
 
     HDR = fuser(images)
 
-    path = fd.asksaveasfilename(initialdir=os.getcwd(), defaultextension=".png",
-                                title="Save HDR image", filetypes=(("PNG", "*.png"), ("JPG", "*.jpg")))
+    path = fd.asksaveasfilename(initialdir=os.getcwd(), defaultextension=".png",title="Save HDR image", filetypes=(("PNG", "*.png"), ("JPG", "*.jpg"), ("RAW", "*.raw"), ("BMP", "*.bmp"), ("TIFF", "*.tiff")))
 
     if HDR is not None:
-        cv2.imwrite(path, HDR)
+        if path is not None:
+            cv2.imwrite(path, HDR)
+        else:
+            showinfo("Error", "No path selected")
     return
 
 
