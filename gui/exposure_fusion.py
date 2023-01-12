@@ -409,6 +409,8 @@ class ExposureFusion():
         g_pyramids = []
         l_pyramids = []
 
+        actual_pyramid_levels = self.pyramid_levels
+
         for image, weight in zip(images, weights):
             gaussian_pyramid = []
 
@@ -418,31 +420,35 @@ class ExposureFusion():
             # Create gaussian pyramid
             for i in range(self.pyramid_levels):
                 if i == 0:
-                    gaussian_pyramid.append(weight)
+                    gaussian_pyramid.append(np.float64(weight/255))
                 else:
                     gaussian_pyramid.append(cv2.pyrDown(gaussian_pyramid[-1]))
+                    if gaussian_pyramid[-1].shape[0] < 8 or gaussian_pyramid[-1].shape[1] < 8:
+                        actual_pyramid_levels = i + 1
+                        break
 
-            # Display gaussian pyramid
+            # Create image gaussians
+            for i in range(actual_pyramid_levels):
 
-            # Create gaussian pyramid for image
-            for i in range(self.pyramid_levels):
                 if i == 0:
-                    image_gaussians.append(image)
+                    image_gaussians.append(np.float64(image/255))
                 else:
                     image_gaussians.append(cv2.pyrDown(image_gaussians[-1]))
 
-            # Create laplacian pyramid
-            for i in range(self.pyramid_levels - 1, -1, -1):
+            # Create Laplacian Pyramid
+            for i in range(actual_pyramid_levels):
 
-                if i == self.pyramid_levels - 1:
-                    laplacian_pyramid.append(image_gaussians[i])
+                this_gaussian = image_gaussians[i]
+                next_gaussian = image_gaussians[i+1] if i < actual_pyramid_levels - \
+                    1 else np.zeros_like(image_gaussians[i])
+
+                if i == actual_pyramid_levels - 1:
+                    laplacian_pyramid.append(this_gaussian)
                 else:
-                    size = (image_gaussians[i].shape[1],
-                            image_gaussians[i].shape[0])
-                    gaussian_expanded = cv2.pyrUp(
-                        image_gaussians[i+1], dstsize=size)
-                    laplacian_pyramid.append(cv2.subtract(
-                        image_gaussians[i], gaussian_expanded))
+                    laplacian_pyramid.append(
+                        cv2.subtract(this_gaussian, cv2.pyrUp(
+                            next_gaussian, dstsize=this_gaussian.shape[:2][::-1]))
+                    )
 
             g_pyramids.append(gaussian_pyramid)
             l_pyramids.append(laplacian_pyramid)
@@ -467,23 +473,20 @@ class ExposureFusion():
         """
         res_laplacian = []
 
-        for level in range(self.pyramid_levels):
+        for level in range(len(gaussian_pyramids[0])):
 
-            reverse_level = self.pyramid_levels - (1 + level)
-
-            res_plevel = np.zeros(laplacian_pyramids[0][reverse_level].shape,
-                                  dtype=np.uint8)
+            res_plevel = np.zeros(laplacian_pyramids[0][level].shape,
+                                  dtype=np.float64)
 
             for img_idx in range(len(gaussian_pyramids)):
 
                 gaussian = gaussian_pyramids[img_idx][level]
-                laplacian = laplacian_pyramids[img_idx][reverse_level]
-
-                gaussian = np.float32(gaussian/255)
+                laplacian = laplacian_pyramids[img_idx][level]
 
                 gaussian = np.repeat(gaussian[:, :, np.newaxis], 3, axis=2)
                 combination = cv2.multiply(
-                    gaussian, laplacian, dtype=cv2.CV_8UC3)
+                    gaussian, laplacian, dtype=cv2.CV_64FC3)
+
                 res_plevel = cv2.add(res_plevel, combination)
 
             res_laplacian.append(res_plevel)
@@ -505,14 +508,50 @@ class ExposureFusion():
             The final HDR image
         """
 
-        laplacian_pyramid = laplacian_pyramid[::-1]
+        res = laplacian_pyramid[-1]
 
-        res = laplacian_pyramid[0]
+        for i in range(len(laplacian_pyramid) - 2, 0, -1):
 
-        for i in range(1, len(laplacian_pyramid)):
+            # Display laplacian pyramid
             size = (laplacian_pyramid[i].shape[1],
                     laplacian_pyramid[i].shape[0])
             res = cv2.pyrUp(res, dstsize=size)
-            res = cv2.add(res, laplacian_pyramid[i])
+            res = cv2.add(res, laplacian_pyramid[i], dtype=cv2.CV_64FC3)
+
+        res = cv2.normalize(res, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8UC3)
 
         return res
+
+
+""" 
+    Quick test of the ExposureFusion class
+"""
+if __name__ == "__main__":
+
+    images = [
+        "images\statues\one\HDR_test_scene_1__1.1.1.png",
+        "images\statues\one\HDR_test_scene_1__1.1.2.png",
+        "images\statues\one\HDR_test_scene_1__1.1.3.png",
+        "images\statues\one\HDR_test_scene_1__1.1.4.png",
+        "images\statues\one\HDR_test_scene_1__1.1.5.png"
+    ]
+
+    images = [cv2.imread(image) for image in images]
+
+    fuser = ExposureFusion(pyramid_levels=7)
+
+    width, height = images[0].shape[:2]
+    aspect = width / height
+    width_new = 600
+    height_new = int(width_new / aspect)
+
+    try:
+        HDR = fuser(images)
+        cv2.namedWindow("HDR", cv2.WINDOW_NORMAL)
+        cv2.resizeWindow("HDR", width_new, height_new)
+        cv2.imshow("HDR", HDR)
+        cv2.waitKey(0)
+    except:
+        print("Error displaying final img.")
+    finally:
+        cv2.destroyAllWindows()
