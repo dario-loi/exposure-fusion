@@ -143,7 +143,16 @@ The fusion pipeline's parameters are set by the class's `__init__` method, and c
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Fix pyramid depth overexposure.
+- [x] Fix pyramid depth overexposure.
+  
+
+Currently the application is fully satisfying to us, however, I still accept feature suggestions, and will be happy to implement them.
+
+Moreover, if the need presents itself, we might want to consider:
+
+- [ ] Export the class as a `pip` module.
+
+
 
 See the [open issues](https://github.com/dario-loi/exposure-fusion/issues) for a full list of proposed features (and known issues).
 

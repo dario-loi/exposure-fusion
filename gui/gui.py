@@ -48,7 +48,7 @@ def delete_file():
 def execute_file():
 
     fuser = ExposureFusion(perform_alignment=bool(
-        var1.get()), pyramid_levels=3, sigma=0.2)
+        var1.get()), pyramid_levels=8, sigma=0.2)
 
     images = [cv2.imread(elements) for elements in listbox.get(0, tk.END)]
 
