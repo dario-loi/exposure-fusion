@@ -23,7 +23,6 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![Python][Python.org]][Python-url]
 
 
 
@@ -77,7 +76,7 @@ of Rome, it is licensed under the MIT license and is free to use for any purpose
 It improves on the Stanford paper [Exposure Fusion](https://web.stanford.edu/class/cs231m/project-1/exposure-fusion.pdf), by adding an alignment pipeline that can improve outputs when the input sequence's photos are offset from eachother.
 
 The repository contains both a class `exposure_fusion.py` and a TKinter GUI `gui.py` that 
-can use the class in a user friendly way`.
+can use the class in a user friendly way.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -107,6 +106,12 @@ For the rest of the files in the repository, one might also need:
 * `tkinter`
 * `matplotlib`
 * `seaborn`
+
+Everything can be installed with the requirements file:
+
+```bash
+pip install -r requirements.txt
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
